@@ -52,3 +52,70 @@ Documented all steps with clear markdown sections and experiment logs.
 Recorded each team member’s contributions.
 Summarized results into a final report with figures and performance tables.
 Exported notebook as PDF and HTML, and pushed it to the GitHub branch for review.
+
+
+# TCGA Multi-Omics Data Processing and Generative Imputation
+
+This repository contains code and workflows for processing, merging, and imputing missing multi-omics data from The Cancer Genome Atlas (TCGA). The focus is on integrating transcriptomics, genomics, and clinical modalities, and applying generative imputation techniques to reconstruct incomplete omics datasets.
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)  
+- [Data Acquisition](#data-acquisition)  
+- [Data Processing](#data-processing)  
+- [Generative Imputation](#generative-imputation)  
+- [Project Structure](#project-structure)  
+- [Usage](#usage)  
+- [Requirements](#requirements)  
+- [License](#license)  
+
+---
+
+## Overview
+
+This project aims to:  
+
+- Download TCGA multi-omics datasets using the GDC Data Portal.  
+- Merge transcriptomics (RNA-Seq), genomics (WGS/WXS, CNV), and clinical data.  
+- Process and store modality-specific data for downstream analysis.  
+- Apply generative models to impute missing omics data, leveraging cross-modal relationships.  
+
+Generative imputation helps improve dataset completeness and ensures biologically consistent reconstructed values.
+
+---
+
+## Data Acquisition
+
+- Data is downloaded via the [GDC Data Portal](https://portal.gdc.cancer.gov/) using manifest files and the `gdc-client`.  
+- **Modalities included**:  
+  - Transcriptomics: RNA-Seq (gene expression counts, TPM/FPKM)  
+  - Genomics: Copy Number Variation (CNV), WGS/WXS  
+  - Clinical: BCR Biotab, BCR XML  
+
+---
+
+## Data Processing
+
+- Recursive collection of TCGA files (`.tsv`, `.txt`, `.xml`, `.vcf`).  
+- Automatic detection of modality based on filename and content.  
+- Safe loading and merging of files into **Parquet format** for memory-efficient storage.  
+- Handles XML parsing for clinical data and tabular merging for omics datasets.
+
+---
+
+## Generative Imputation
+
+- Missing values in multi-omics datasets are imputed using generative approaches.  
+- Models leverage cross-modal correlations to reconstruct missing data.  
+- Techniques used may include:
+  - Variational Autoencoders (VAE)  
+  - Generative Adversarial Networks (GANs)  
+  - Latent-space matrix factorization  
+
+---
+
+## Project Structure
+
+
