@@ -118,4 +118,49 @@ Generative imputation helps improve dataset completeness and ensures biologicall
 
 ## Project Structure
 
+TCGA_MultiOmics/
+├── data/
+│ ├── raw/ # Raw downloaded TCGA data
+│ ├── merged_batches/ # Merged modality-specific Parquet files
+│ └── imputation_ready/ # Cleaned and formatted data ready for imputation
+├── notebooks/ # Colab / Jupyter notebooks
+├── scripts/ # Python scripts for processing and imputation
+├── gdc_manifest.txt # Example manifest for GDC download
+└── README.md
+
+
+---
+
+## Usage
+
+1. Mount Google Drive in Colab and set `base_dir` to your TCGA data folder.  
+2. Run the data processing notebook/script (`Step 3.1`) to merge transcriptomics, genomics, and clinical files.  
+3. Use the processed Parquet files in generative imputation workflows.  
+4. Evaluate imputation quality and integrate for downstream analyses (e.g., clustering, survival prediction).  
+
+---
+
+## Requirements
+
+- Python 3.8+  
+- pandas  
+- numpy  
+- matplotlib / seaborn  
+- scikit-learn  
+- torch / torchvision (for deep generative models)  
+- Google Colab or local Jupyter environment  
+
+---
+
+## License
+
+This project is released under the MIT License. See [LICENSE](LICENSE) for details.
+
+---
+
+## References
+
+- [TCGA Data Portal](https://portal.gdc.cancer.gov/)  
+- [GDC Data Transfer Tool](https://gdc.cancer.gov/access-data/gdc-data-transfer-tool)  
+- Yuan, et al. "Generative Imputation of Multi-Omics Data" (2021)  
 
