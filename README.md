@@ -1,179 +1,176 @@
-🧬 Generative Imputation of Missing Multi-Omics Data (mRNA → CNV Reconstruction)
-📖 Overview
+<h1 align="center">🧬 Generative Imputation of Missing Multi-Omics Data (mRNA → CNV Reconstruction)</h1>
 
-This project explores generative modeling for imputing missing omics data using deep learning.
-Using data from the TCGA Pan-Cancer collection, the study focuses on reconstructing genomic (CNV) features from transcriptomic (mRNA) profiles.
+<p align="center">
+<b>Biomedical Multimodal Learning — University of Colorado Denver</b>  
+</p>
+
+---
+
+## 📖 Overview
+This project explores **generative modeling for imputing missing omics data** using deep learning.  
+Using data from the **TCGA Pan-Cancer** collection, the study focuses on **reconstructing genomic (CNV) features** from **transcriptomic (mRNA)** profiles.
 
 By leveraging cross-modal relationships between omics modalities, this project aims to:
+- Improve **data completeness** in multi-omics datasets  
+- Preserve **biological consistency**  
+- Support **downstream tasks** such as cancer subtype classification  
 
-Improve data completeness in multi-omics datasets,
+---
 
-Preserve biological consistency, and
+## 🧪 Project Objectives
+1. **Simulate Missing Omics Data** — artificially mask CNV values to mimic real-world missingness  
+2. **Apply Baseline Imputation Methods** — mean, KNN, and linear regression  
+3. **Train a Generative Autoencoder** — use transcriptomics (mRNA) to reconstruct genomics (CNV)  
+4. **Quantitatively Evaluate Imputations** — using MSE, R², and correlation metrics  
+5. **Visualize Cross-Modal Structure** — via PCA, UMAP, and distribution plots  
+6. **Perform Downstream Classification** — assess imputed CNV data on cancer subtype prediction  
 
-Support downstream tasks such as cancer subtype classification.
+---
 
-The work is part of the Biomedical Multimodal Learning term project at the University of Colorado Denver.
+## 📂 Dataset Description
+**Source:** TCGA (The Cancer Genome Atlas)  
 
-🧪 Project Objectives
+**Modalities Used:**
+- **mRNA (Transcriptomics):** Gene expression activity  
+- **CNV (Genomics):** DNA copy number variation  
+- **Labels:** Cancer subtype identifiers (32 encoded categories)  
 
-Simulate Missing Omics Data — artificially mask CNV values to mimic real-world missingness.
-
-Apply Baseline Imputation Methods — mean, KNN, and linear regression.
-
-Train a Generative Autoencoder — use transcriptomics (mRNA) to reconstruct genomics (CNV).
-
-Quantitatively Evaluate Imputations — using MSE, R², and correlation metrics.
-
-Visualize Cross-Modal Structure — via PCA, UMAP, and distribution plots.
-
-Perform Downstream Classification — assess imputed CNV data on cancer subtype prediction.
-
-📂 Dataset Description
-
-Source: TCGA (The Cancer Genome Atlas)
-Modality 1 (mRNA): Transcriptomics data showing gene expression levels.
-Modality 2 (CNV): Genomics data showing DNA copy number variations.
-Labels: Cancer subtype identifiers (numerical categories).
-
-Modality	Biological Type	Samples	Features	Description
-mRNA	Transcriptomics	8,314	3,217	Gene expression activity
-CNV	Genomics	8,314	3,105	Copy number variation per gene
-Labels	Cancer Subtypes	8,314	1	32 encoded cancer categories
+| Modality | Biological Type | Samples | Features | Description |
+|-----------|-----------------|----------|-----------|--------------|
+| mRNA | Transcriptomics | 8,314 | 3,217 | Gene expression activity |
+| CNV | Genomics | 8,314 | 3,105 | Copy number variation per gene |
+| Labels | Cancer Subtypes | 8,314 | 1 | 32 encoded cancer categories |
 
 All modalities are aligned by shared sample IDs.
 
-⚙️ Project Structure
+---
+
+## ⚙️ Project Structure
 ├── data/
-│   ├── Pan-cancer_mRNA.csv
-│   ├── Pan-cancer_CNV.csv
-│   ├── Pan-cancer_label_num.csv
+│ ├── Pan-cancer_mRNA.csv
+│ ├── Pan-cancer_CNV.csv
+│ ├── Pan-cancer_label_num.csv
 │
 ├── notebooks/
-│   └── Generative_Imputation_PanCancer.ipynb   ← main Colab notebook
+│ └── Generative_Imputation_PanCancer.ipynb ← main Colab notebook
 │
 ├── results/
-│   ├── reconstruction_visuals/
-│   ├── classification_reports/
-│   └── figures/
+│ ├── reconstruction_visuals/
+│ ├── classification_reports/
+│ └── figures/
 │
 ├── requirements.txt
 ├── README.md
 └── LICENSE
 
-💻 Setup Instructions
-Step 1. Clone the Repository
+yaml
+Copy code
+
+---
+
+## 💻 Setup Instructions
+
+### Step 1. Clone the Repository
+```bash
 git clone https://github.com/yourusername/Generative-Imputation-MultiOmics.git
 cd Generative-Imputation-MultiOmics
-
 Step 2. Install Dependencies
-
-You can install everything using:
-
+bash
+Copy code
 pip install -r requirements.txt
+or if using Google Colab:
 
-
-or, if using Google Colab:
-
+python
+Copy code
 !pip install -q pandas numpy scikit-learn matplotlib seaborn torch torchvision torchaudio tqdm umap-learn
-
 Step 3. Load Dataset
-
 Update your dataset path inside the notebook:
 
+python
+Copy code
 base_path = "/content/drive/MyDrive/Cancer-Multi-Omics-Benchmark/Main_Dataset/Classification_datasets/Pan-cancer/Original"
-
-
 Then run:
 
+python
+Copy code
 mRNA = pd.read_csv(f"{base_path}/Pan-cancer_mRNA.csv", index_col=0)
 CNV = pd.read_csv(f"{base_path}/Pan-cancer_CNV.csv", index_col=0)
 labels = pd.read_csv(f"{base_path}/Pan-cancer_label_num.csv", index_col=0)
-
 🧩 Methodology
 1. Data Preprocessing
+Align modalities using shared sample IDs
 
-Align modalities using shared sample IDs.
+Standardize features with StandardScaler
 
-Standardize each feature using StandardScaler.
-
-Handle missing values (simulated 20% missing CNV).
+Simulate 20% missing values in CNV to model incomplete data
 
 2. Baseline Imputations
+Mean Imputation: Replace missing values with mean
 
-Mean Imputation — replaces missing values with column means.
+KNN Imputation: Use neighboring samples for replacement
 
-KNN Imputation — imputes missing values using neighboring samples.
-
-Linear Regression — predicts CNV features from mRNA using linear models.
+Linear Regression: Predict CNV values using mRNA as input
 
 3. Generative Autoencoder
+A neural network learns to reconstruct CNV values from mRNA embeddings.
 
-A neural network learns to reconstruct CNV values from mRNA embeddings:
-
+vbnet
+Copy code
 Encoder: [Input → 512 → 256]
 Decoder: [256 → 512 → Output]
 Loss: Mean Squared Error
 Optimizer: Adam (lr=0.001)
-
 4. Evaluation Metrics
-Metric	Purpose
-MSE	Measures average reconstruction error
-R² Score	Captures how well model explains variance
-Sample Correlation	Evaluates biological coherence per patient
+Metric	Description
+MSE	Average reconstruction error
+R² Score	Explained variance measure
+Sample Correlation	Biological coherence per patient
+
 5. Visualization
+PCA & UMAP: Compare latent spaces
 
-PCA & UMAP for latent space comparison.
+KDE & Histogram: Compare data distributions
 
-Distribution plots to compare imputation realism.
+Heatmaps: Show missingness and correlation
 
-Correlation histograms to measure per-sample consistency.
+Bar plots: Show classification F1-scores
 
-Bar plots of classification F1-scores across cancer subtypes.
+6. Downstream Classification
+Random Forest trained on autoencoder-imputed CNV data
 
-6. Downstream Task
+Evaluated on real cancer subtype labels
 
-Random Forest classifier trained on autoencoder-imputed CNV data to predict cancer subtypes.
-Performance measured using:
-
-Accuracy, Precision, Recall, F1-score
-
-Confusion Matrix Visualization
+Metrics: Precision, Recall, F1-score, Accuracy, and Confusion Matrix
 
 📈 Key Results
-Model	Mean Squared Error	R² Score	Classification Accuracy
+Method	MSE ↓	R² ↑	Accuracy ↑
 Mean Imputation	0.54	0.42	0.32
 KNN Imputation	0.38	0.59	0.41
-Regression	0.28	0.69	0.49
-Autoencoder	0.19	0.81	0.57
+Linear Regression	0.28	0.69	0.49
+Autoencoder (Proposed)	0.19	0.81	0.57
 
-The autoencoder achieved highest reconstruction accuracy and significantly improved downstream classification, confirming its ability to learn meaningful cross-omic relationships.
+The Autoencoder achieved the best overall performance, showing that generative modeling effectively captures the complex cross-omic relationships between transcriptomics and genomics.
 
 🧠 Visual Highlights
+PCA and UMAP show overlapping manifolds for real and imputed CNV data.
 
-PCA & UMAP plots show strong alignment between real and reconstructed CNV spaces.
+KDE distributions confirm the reconstructed CNV retains biological variance.
 
-Distribution overlap between real and imputed CNV validates biological realism.
+Correlation heatmaps demonstrate consistency across patient samples.
 
-F1-score bar chart reveals subtype-specific predictive strength.
-
-Confusion matrix confirms the autoencoder’s reconstructed features retain discriminative power.
+Confusion matrix highlights moderate accuracy in cancer subtype classification.
 
 📚 Tools & Libraries
-
-Python 3.10+
-
-PyTorch — for autoencoder implementation
-
-Scikit-learn — for preprocessing, KNN, regression, and classification
-
-Seaborn / Matplotlib — for visualization
-
-UMAP-learn — for nonlinear dimensionality reduction
+Category	Tools
+Deep Learning	PyTorch
+ML & Preprocessing	Scikit-learn
+Visualization	Matplotlib, Seaborn
+Dimensionality Reduction	UMAP-learn, PCA
+Environment	Python 3.10+, Google Colab
 
 🤝 Team Members
-Name	Role	Email
-[Your Name]	Team Lead / Modeling	your@email.edu
-
-[Member 2]	Data Processing & Visualization	
-[Member 3]	Evaluation & Report Writing	
-[Member 4]	Code Review / Documentation
+Name
+Muhammad Babar
+Kathryn Eron
+Kavya Avula
+Susmitha Rachuri
