@@ -1,0 +1,17 @@
+# Core analysis (both notebooks)
+jupyter
+pandas
+numpy
+scipy
+scikit-learn
+matplotlib
+seaborn
+torch
+tqdm
+umap-learn
+lifelines
+gseapy
+openpyxl
+
+# Supplementary BioNeuralNet analysis only (reproduce_analysis.py, build_figures.py)
+networkx
