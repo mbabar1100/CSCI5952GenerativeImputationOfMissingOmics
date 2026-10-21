@@ -16,6 +16,7 @@ Developed as part of **CSCI 5952 — Big Data Science** (team: Muhammad Babar, K
 6. [Methodology](#methodology)
 7. [Results Files](#results-files)
 8. [Citation](#citation)
+9. [License & Contribution Guidelines](#license--contribution-guidelines)
 
 ---
 
@@ -47,10 +48,12 @@ The study evaluates:
 
 ### Source
 
-All molecular and clinical data are derived from **The Cancer Genome Atlas (TCGA)** Pan-Cancer Atlas and the **TCGA Pan-Cancer Clinical Data Resource (TCGA-CDR)**.
+All molecular and clinical data are derived from **The Cancer Genome Atlas (TCGA)**. Two third-party datasets are used:
 
-- **Molecular data:** TCGA Pan-Cancer multi-omics benchmark, via the GDC Data Portal — <https://portal.gdc.cancer.gov/>
-- **Clinical outcomes:** TCGA-CDR — <https://gdc.cancer.gov/about-data/publications/PanCan-Clinical-2018> (Liu et al., *Cell* 2018, [doi:10.1016/j.cell.2018.02.052](https://doi.org/10.1016/j.cell.2018.02.052))
+| Dataset | Used for | Source | Licence |
+|---|---|---|---|
+| **MLOmics** (Pan-cancer classification dataset, *Original* scale) | mRNA, CNV and cancer-type labels | Figshare: [doi:10.6084/m9.figshare.28729127](https://doi.org/10.6084/m9.figshare.28729127) · Hugging Face: <https://huggingface.co/datasets/AIBIC/MLOmics> (`Main_Dataset/Classification_datasets/Pan-cancer/Original/`) · Paper: Yang et al., *Scientific Data* 2025, [doi:10.1038/s41597-025-05235-x](https://doi.org/10.1038/s41597-025-05235-x) | CC BY 4.0 |
+| **TCGA Pan-Cancer Clinical Data Resource (TCGA-CDR)** | Overall survival (OS time, OS event) | <https://gdc.cancer.gov/about-data/publications/PanCan-Clinical-2018> · Paper: Liu et al., *Cell* 2018, [doi:10.1016/j.cell.2018.02.052](https://doi.org/10.1016/j.cell.2018.02.052) | Public (GDC open access) |
 
 ### Processed cohort
 
@@ -72,10 +75,12 @@ All molecular and clinical data are derived from **The Cancer Genome Atlas (TCGA
 
 | File | Contents | In this repo? |
 |---|---|---|
-| `Pan-cancer_mRNA.csv` | mRNA expression matrix (8,314 × 3,217) | No — obtain from the TCGA Pan-Cancer source above |
-| `Pan-cancer_CNV.csv` | CNV matrix (8,314 × 3,105) | No — obtain from the TCGA Pan-Cancer source above |
-| `Pan-cancer_label_num.csv` | Cancer-type labels (32 classes) | No — obtain from the TCGA Pan-Cancer source above |
+| `Pan-cancer_mRNA.csv` | mRNA expression matrix (8,314 × 3,217) | No — download from MLOmics (see above) |
+| `Pan-cancer_CNV.csv` | CNV matrix (8,314 × 3,105) | No — download from MLOmics (see above) |
+| `Pan-cancer_label_num.csv` | Cancer-type labels (32 classes) | No — download from MLOmics (see above) |
 | `TCGA-CDR-SupplementalTableS1.xlsx` | TCGA-CDR clinical outcomes (OS time, OS event) | Yes |
+
+The three MLOmics files are used exactly as distributed; all preprocessing (label alignment, standardisation, masking) is done inside the notebooks.
 
 ---
 
@@ -86,6 +91,8 @@ All molecular and clinical data are derived from **The Cancer Genome Atlas (TCGA
 ```text
 .
 ├── README.md
+├── LICENSE                                            # MIT licence
+├── requirements.txt                                   # Python dependencies
 │
 ├── CSI5952_GenerativeImputationOfMissingOmics.ipynb   # course-project notebook: EDA, masking, baselines, autoencoder, classification
 ├── Babar analysis-paper-1.ipynb                       # manuscript analysis notebook (confirmatory, gene-level, GSEA, survival, ablation, LOCO)
@@ -138,8 +145,10 @@ All molecular and clinical data are derived from **The Cancer Genome Atlas (TCGA
 ## Requirements
 
 - Python 3.10+ with Jupyter
-- `pandas`, `numpy`, `scipy`, `scikit-learn`, `matplotlib`, `seaborn`, `torch`, `tqdm`, `umap-learn`, `lifelines`, `gseapy`, `openpyxl`
+- Python packages listed in [`requirements.txt`](requirements.txt): `pandas`, `numpy`, `scipy`, `scikit-learn`, `matplotlib`, `seaborn`, `torch`, `tqdm`, `umap-learn`, `lifelines`, `gseapy`, `openpyxl`
 - Supplementary analysis only: `networkx` and [BioNeuralNet](https://github.com/UCD-BDLab/BioNeuralNet)
+- A GPU is optional; the neural models fall back to CPU automatically.
+- Enrichment analysis (`gseapy`) downloads GO / KEGG gene-set libraries, so it needs an internet connection.
 
 ---
 
@@ -150,12 +159,13 @@ All molecular and clinical data are derived from **The Cancer Genome Atlas (TCGA
 ```bash
 python -m venv .venv
 source .venv/bin/activate           # Windows: .venv\Scripts\activate
-pip install jupyter pandas numpy scipy scikit-learn matplotlib seaborn torch tqdm umap-learn lifelines gseapy openpyxl
+pip install -r requirements.txt
 ```
 
 ### 2. Prepare the data
 
-Place `Pan-cancer_mRNA.csv`, `Pan-cancer_CNV.csv`, `Pan-cancer_label_num.csv` and `TCGA-CDR-SupplementalTableS1.xlsx` in one folder.
+1. Download `Pan-cancer_mRNA.csv`, `Pan-cancer_CNV.csv` and `Pan-cancer_label_num.csv` from MLOmics (`Main_Dataset/Classification_datasets/Pan-cancer/Original/` on [Hugging Face](https://huggingface.co/datasets/AIBIC/MLOmics), or the [Figshare archive](https://doi.org/10.6084/m9.figshare.28729127)).
+2. Place them in one folder together with `TCGA-CDR-SupplementalTableS1.xlsx` from this repository.
 
 ### 3. Set the data path
 
@@ -219,6 +229,31 @@ Key protocol settings:
 
 ## Citation
 
-If you use this code, please cite the accompanying manuscript and the TCGA-CDR resource:
+If you use this code, please cite the accompanying manuscript:
 
-- Liu J, et al. An Integrated TCGA Pan-Cancer Clinical Data Resource to Drive High-Quality Survival Outcome Analytics. *Cell* 2018. doi:10.1016/j.cell.2018.02.052
+- Babar M, et al. Cross-Modal Recovery of Missing Genomic Signals: Benchmarking Imputation Strategies Under Structured Missingness in Pan-Cancer Multi-Omics Data. Submitted to *PeerJ Computer Science*.
+
+and the datasets it builds on:
+
+- Yang Z, Kotoge R, Piao X, Chen Z, Zhu L, Gao P, Matsubara Y, Sakurai Y, Sun J. MLOmics: Cancer Multi-Omics Database for Machine Learning. *Scientific Data* 12, 913 (2025). doi:10.1038/s41597-025-05235-x
+- Liu J, et al. An Integrated TCGA Pan-Cancer Clinical Data Resource to Drive High-Quality Survival Outcome Analytics. *Cell* 173(2), 400–416 (2018). doi:10.1016/j.cell.2018.02.052
+
+---
+
+## License & Contribution Guidelines
+
+### License
+
+The code in this repository is released under the **MIT License** — see [`LICENSE`](LICENSE).
+
+Third-party data keep their original terms: MLOmics is distributed under **CC BY 4.0**, and TCGA-CDR is open-access data from the NCI Genomic Data Commons. Please cite both sources (see [Citation](#citation)) when reusing them.
+
+### Contributing
+
+Contributions, bug reports and questions are welcome.
+
+1. **Issues:** open a [GitHub issue](https://github.com/mbabar1100/CSCI5952GenerativeImputationOfMissingOmics/issues) describing the problem, the steps to reproduce it, and your environment (OS, Python and package versions).
+2. **Pull requests:** fork the repository, create a branch from `main`, make focused changes with clear commit messages, and open a pull request explaining what changed and why.
+3. **Reproducibility:** changes to analysis code should keep the fixed random seeds and the training-only preprocessing described in [Methodology](#methodology), so results stay comparable with the manuscript.
+
+For questions about the study, contact the corresponding author, Muhammad Babar ([muhammad.babar@ucdenver.edu](mailto:muhammad.babar@ucdenver.edu)).
